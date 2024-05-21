@@ -19,6 +19,10 @@ const routes: Routes = [
         component: ContactPageComponent
     },
     {
+        path: 'countries',
+        loadChildren: () => import('./countries/coutries.module').then( m => m.CoutriesModule ) //modulo lazy load estos van a ser cargados bajo demanda
+    },
+    {
         path: '**',
         redirectTo: 'home',
     },
