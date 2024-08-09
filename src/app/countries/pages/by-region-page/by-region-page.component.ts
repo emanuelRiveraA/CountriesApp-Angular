@@ -19,7 +19,7 @@ export class ByRegionPageComponent {
 
     this.countriesService.searchRegion( region )
       .subscribe( regions => {
-        this.regions = this.regions;
+        this.regions = this.regions; 
       });
   }
 }
