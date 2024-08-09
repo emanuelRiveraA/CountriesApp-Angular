@@ -20,6 +20,7 @@ export class ByRegionPageComponent {
     this.countriesService.searchRegion( region )
       .subscribe( regions => {
         this.regions = this.regions; 
+        console.log(regions);
       });
   }
 }
