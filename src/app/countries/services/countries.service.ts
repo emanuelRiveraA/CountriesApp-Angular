@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, delay, map, of } from 'rxjs';
 import { Country } from '../interfaces/country';
 import { Region } from '../interfaces/region';
 
@@ -10,6 +10,14 @@ export class CountriesService {
     private apiUrl: string = 'https://restcountries.com/v3.1'; 
 
     constructor(private http: HttpClient) { }
+
+    private getCountriesRequest( url: string ): Observable<Country[]> {
+        return this.http.get<Country[]>( url )
+            .pipe(
+                catchError( () => of( [] )),
+                delay( 1000 ),
+            );
+    }
 
     searchCountryByAlphaCode( code: string ): Observable<Country | null>{
 
@@ -24,20 +32,16 @@ export class CountriesService {
     
     searchCapital( term: string): Observable<Country[]>{
         const url = `${ this.apiUrl }/capital/${ term }`;
-
-        return this.http.get<Country[]>( url )
-            .pipe(
-                catchError( () => of([]) )//lo que hace es que si sucede un error en vez de devolverlo regresa un observable que va a ser un arreglo vacio
-            ); //pipe es un metodo que sirve para especificar diferentes operadores de rxjs
+        return this.getCountriesRequest( url );
+        //return this.http.get<Country[]>( url )
+            //.pipe(
+            //    catchError( () => of([]) )//lo que hace es que si sucede un error en vez de devolverlo regresa un observable que va a ser un arreglo vacio
+            //); //pipe es un metodo que sirve para especificar diferentes operadores de rxjs
     }
 
     serchCountry( term: string): Observable<Country[]>{
         const url = `${ this.apiUrl }/name/${ term }`;
-
-        return this.http.get<Country[]>( url )
-            .pipe( 
-                catchError( () => of([]) )
-            );
+        return this.getCountriesRequest( url );
     }
 
     searchRegion( region: string): Observable<Region[]>{
