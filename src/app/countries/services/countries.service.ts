@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, delay, map, of } from 'rxjs';
+import { Observable, catchError, delay, map, of, tap } from 'rxjs';
 import { Country } from '../interfaces/country';
 import { Region } from '../interfaces/region';
 import { CacheStore } from '../interfaces/cache-store.interface';
@@ -39,7 +39,10 @@ export class CountriesService {
     
     searchCapital( term: string): Observable<Country[]>{
         const url = `${ this.apiUrl }/capital/${ term }`;
-        return this.getCountriesRequest( url );
+        return this.getCountriesRequest( url )
+            .pipe(
+                tap( countries => this.cacheStore.byCapital = { term: term, countries: countries } )
+            );//disparar operadores de rxjs
         //return this.http.get<Country[]>( url )
             //.pipe(
             //    catchError( () => of([]) )//lo que hace es que si sucede un error en vez de devolverlo regresa un observable que va a ser un arreglo vacio
