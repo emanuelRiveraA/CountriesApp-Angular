@@ -41,7 +41,7 @@ export class CountriesService {
         const url = `${ this.apiUrl }/capital/${ term }`;
         return this.getCountriesRequest( url )
             .pipe(
-                tap( countries => this.cacheStore.byCapital = { term: term, countries: countries } )
+                tap( countries => this.cacheStore.byCapital = { term: term, countries: countries } )//se hace esto sin alterar el flujo
             );//disparar operadores de rxjs
         //return this.http.get<Country[]>( url )
             //.pipe(
@@ -51,14 +51,17 @@ export class CountriesService {
 
     serchCountry( term: string): Observable<Country[]>{
         const url = `${ this.apiUrl }/name/${ term }`;
-        return this.getCountriesRequest( url );
+        return this.getCountriesRequest( url )
+            .pipe(
+                tap( countries => this.cacheStore.byCountries = { term: term, countries: countries})
+            );
     }
 
     searchRegion( region: string): Observable<Region[]>{
         const url = `${ this.apiUrl }/region/${ region }`;
-
         return this.http.get<Region[]>( url )
             .pipe( 
+                // tap( countries => this.cacheStore.byRegion = { region: region}),
                 catchError( () => of([]) )
             );
     }
